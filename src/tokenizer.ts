@@ -37,7 +37,6 @@ export function getTokensImage(
     height = Math.ceil(height * percentage)
   }
 
-  // 下面计算方式有问题，不清楚Resize 是怎么计算的
   const h = Math.ceil(height / 512)
   const w = Math.ceil(width / 512)
   const n = w * h
