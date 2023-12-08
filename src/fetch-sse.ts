@@ -12,8 +12,16 @@ export async function fetchSSE(
   },
   fetch: types.FetchFn = globalFetch
 ) {
-  const { onMessage, onError, ...fetchOptions } = options
+  const { onMessage, onError, body, ...fetchOptions } = options
   const res = await fetch(url, fetchOptions)
+
+  let model = ''
+
+  try {
+    const bodyJson = JSON.parse(body as string)
+    model = bodyJson.model
+  } catch (error) {}
+
   if (!res.ok) {
     let reason: string
 
@@ -62,6 +70,13 @@ export async function fetchSSE(
       return
     }
 
+    if (
+      model &&
+      chunk === 'data: [DONE]' &&
+      ['palm-2-chat-bison', 'palm-2-chat-bison-32k'].includes(model)
+    ) {
+      onMessage('[DONE]')
+    }
     parser.feed(chunk)
   }
 
