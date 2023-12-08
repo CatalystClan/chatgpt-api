@@ -12,13 +12,13 @@ export async function fetchSSE(
   },
   fetch: types.FetchFn = globalFetch
 ) {
-  const { onMessage, onError, body, ...fetchOptions } = options
+  const { onMessage, onError, ...fetchOptions } = options
   const res = await fetch(url, fetchOptions)
 
   let model = ''
 
   try {
-    const bodyJson = JSON.parse(body as string)
+    const bodyJson = JSON.parse(fetchOptions?.body as string)
     model = bodyJson.model
   } catch (error) {}
 
