@@ -73,7 +73,12 @@ export async function fetchSSE(
     if (
       model &&
       chunk === 'data: [DONE]' &&
-      ['palm-2-chat-bison', 'palm-2-chat-bison-32k'].includes(model)
+      [
+        'palm-2-chat-bison',
+        'palm-2-chat-bison-32k',
+        'gemini-pro',
+        'gemini-pro-vision'
+      ].includes(model)
     ) {
       onMessage('[DONE]')
     }
