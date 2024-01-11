@@ -402,21 +402,25 @@ export class ChatGPTAPI {
     let userContent: types.ChatCompletionRequestMessageContent = text
     let imageTokens = 0
 
-    if (image?.url) {
+    if (image?.length) {
       userContent = [
         {
           type: 'text',
           text: text
-        },
-        {
-          type: 'image_url',
-          image_url: {
-            url: image.url,
-            detail: 'high'
-          }
         }
       ]
-      imageTokens = tokenizer.getTokensImage(image.width, image.height, 'high')
+
+      image.forEach((item) => {
+        // @ts-ignore
+        userContent.push({
+          type: 'image_url',
+          image_url: {
+            url: item.url,
+            detail: 'high'
+          }
+        })
+        imageTokens += tokenizer.getTokensImage(item.width, item.height, 'high')
+      })
     }
 
     const systemMessageOffset = messages.length
@@ -478,26 +482,37 @@ export class ChatGPTAPI {
       let content: types.ChatCompletionRequestMessageContent =
         parentMessage.text
 
-      if (parentMessage.image?.url) {
+      let parentMessageImage: types.SendMessageImage[] = []
+
+      if (Array.isArray(parentMessage.image)) {
+        parentMessageImage = parentMessage.image
+      } else if (parentMessage.image?.url) {
+        parentMessageImage = [parentMessage.image]
+      }
+
+      if (parentMessageImage.length) {
         content = [
           {
             type: 'text',
             text: parentMessage.text
-          },
-          {
-            type: 'image_url',
-            image_url: {
-              url: parentMessage.image.url,
-              detail: 'high'
-            }
           }
         ]
 
-        imageTokens += tokenizer.getTokensImage(
-          parentMessage.image.width,
-          parentMessage.image.height,
-          'high'
-        )
+        parentMessageImage.forEach((item) => {
+          // @ts-ignore
+          content.push({
+            type: 'image_url',
+            image_url: {
+              url: item.url,
+              detail: 'high'
+            }
+          })
+          imageTokens += tokenizer.getTokensImage(
+            item.width,
+            item.height,
+            'high'
+          )
+        })
       }
 
       nextMessages = nextMessages.slice(0, systemMessageOffset).concat([

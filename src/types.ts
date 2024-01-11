@@ -43,7 +43,7 @@ export type SendMessageImage = {
 export type SendMessageOptions = {
   /** The name of a user in a multi-user chat. */
   name?: string
-  image?: SendMessageImage
+  image?: SendMessageImage[]
   parentMessageId?: string
   conversationId?: string
   messageId?: string
@@ -61,19 +61,19 @@ export type ChatCompletionRequestMessageContentImageDetail = 'low' | 'high'
 
 export type ChatCompletionRequestMessageContent =
   | string
-  | [
-      {
-        type: 'text'
-        text: string
-      },
-      {
-        type: 'image_url'
-        image_url: {
-          url: string
-          detail: ChatCompletionRequestMessageContentImageDetail
+  | (
+      | {
+          type: 'text'
+          text: string
         }
-      }
-    ]
+      | {
+          type: 'image_url'
+          image_url: {
+            url: string
+            detail: ChatCompletionRequestMessageContentImageDetail
+          }
+        }
+    )[]
 
 export type MessageActionType = 'next' | 'variant'
 
@@ -90,7 +90,7 @@ export type SendMessageBrowserOptions = {
 export interface ChatMessage {
   id: string
   text: string
-  image?: SendMessageImage
+  image?: SendMessageImage | SendMessageImage[]
   role: Role
   name?: string
   delta?: string
