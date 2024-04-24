@@ -77,7 +77,9 @@ export async function fetchSSE(
         'palm-2-chat-bison',
         'palm-2-chat-bison-32k',
         'gemini-pro',
-        'gemini-pro-vision'
+        'gemini-pro-vision',
+        'command-r',
+        'command-r-plus'
       ].includes(model)
     ) {
       onMessage('[DONE]')
